@@ -1,144 +1,487 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Kuray Tunc – HR Chatbot</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>Kuray Tunc – HR Chatbot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<style>
+  <style>
+    :root {
+      --bg-dark: #020817;
+      --bg-card: #020617;
+      --bg-chat: #020617;
+      --accent: #3b82f6;
+      --accent-soft: #1d4ed8;
+      --border-subtle: #1f2933;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --user-msg: #22c55e;
+      --bot-msg: #111827;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-        margin: 0;
-        background: linear-gradient(135deg, #0d1117, #1b2838);
-        font-family: Arial, sans-serif;
-        color: #fff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text-main);
+      background:
+        radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.30) 0, transparent 45%),
+        radial-gradient(circle at 90% 80%, rgba(56, 189, 248, 0.25) 0, transparent 50%),
+        radial-gradient(circle at 20% 80%, rgba(34, 197, 94, 0.25) 0, transparent 55%),
+        #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
     }
 
-    .chat-container {
-        width: 420px;
-        height: 80vh;
-        background: #161b22;
-        border-radius: 14px;
-        padding: 20px;
-        box-shadow: 0 0 25px rgba(0,0,0,0.55);
-        display: flex;
-        flex-direction: column;
+    .app-wrapper {
+      width: 100%;
+      max-width: 1000px;
+      background: rgba(15, 23, 42, 0.92);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      box-shadow:
+        0 22px 45px rgba(15, 23, 42, 0.6),
+        0 0 0 1px rgba(15, 23, 42, 0.9);
+      display: flex;
+      gap: 0;
+      overflow: hidden;
+      backdrop-filter: blur(18px);
     }
 
-    h2 {
-        text-align: center;
-        margin-bottom: 10px;
-        color: #58a6ff;
+    /* Sol panel – profil kartı */
+    .sidebar {
+      width: 320px;
+      padding: 24px 22px;
+      background: radial-gradient(circle at top left, rgba(59,130,246,0.40), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(16,185,129,0.28), transparent 60%),
+                  #020617;
+      border-right: 1px solid rgba(148, 163, 184, 0.28);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #22c55e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 26px;
+      color: #f9fafb;
+      box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.8);
+    }
+
+    .name-block h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+
+    .name-block p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--text-muted);
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(148, 163, 184, 0.85);
+      margin-bottom: 6px;
+    }
+
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .skills-list span {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      color: var(--text-muted);
+    }
+
+    .quick-questions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .quick-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.92);
+      color: var(--text-main);
+      font-size: 12px;
+      padding: 7px 10px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.08s ease;
+    }
+
+    .quick-btn span {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .quick-btn:hover {
+      background: rgba(37, 99, 235, 0.24);
+      border-color: #3b82f6;
+      transform: translateY(-1px);
+    }
+
+    .footer-note {
+      margin-top: auto;
+      font-size: 11px;
+      color: var(--text-muted);
+      opacity: 0.82;
+    }
+
+    .footer-note strong {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    /* Sağ panel – chat */
+    .chat-panel {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 18px 18px 16px;
+      background: radial-gradient(circle at top right, rgba(56, 189, 248,0.27), transparent 50%),
+                  #020617;
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.85);
+    }
+
+    .chat-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .chat-title h2 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .chat-title p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.86);
     }
 
     #messages {
-        flex: 1;
-        overflow-y: auto;
-        padding: 10px;
-        border-radius: 8px;
-        background: #0d1117;
-        margin-bottom: 12px;
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 8px;
+      margin-bottom: 10px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.88);
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.4);
     }
 
     .msg {
-        margin-bottom: 10px;
-        padding: 10px;
-        border-radius: 8px;
-        line-height: 1.4;
+      margin-bottom: 10px;
+      padding: 9px 11px;
+      border-radius: 12px;
+      line-height: 1.4;
+      font-size: 13px;
+      max-width: 90%;
+      position: relative;
+      word-wrap: break-word;
+      white-space: pre-wrap;
     }
 
-    .user {
-        background: #238636;
-        text-align: right;
+    .msg.user {
+      margin-left: auto;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #022c22;
+      border-bottom-right-radius: 4px;
     }
 
-    .bot {
-        background: #30363d;
+    .msg.bot {
+      margin-right: auto;
+      background: rgba(17, 24, 39, 0.98);
+      border-bottom-left-radius: 4px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
     }
 
     #inputBox {
-        display: flex;
-        gap: 10px;
+      display: flex;
+      gap: 8px;
+      margin-top: 2px;
     }
 
     #question {
-        flex: 1;
-        padding: 10px;
-        border-radius: 6px;
-        border: none;
-        outline: none;
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      outline: none;
+      background: #020617;
+      color: var(--text-main);
+      font-size: 13px;
+    }
+
+    #question::placeholder {
+      color: var(--text-muted);
     }
 
     #sendBtn {
-        background: #58a6ff;
-        color: #000;
-        border: none;
-        padding: 10px 18px;
-        border-radius: 6px;
-        cursor: pointer;
+      border-radius: 999px;
+      border: none;
+      padding: 0 18px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+      color: #f9fafb;
+      font-weight: 500;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.45);
+      transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.12s ease;
+      white-space: nowrap;
     }
 
     #sendBtn:hover {
-        background: #79c0ff;
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(37, 99, 235, 0.60);
+      filter: brightness(1.08);
     }
-</style>
+
+    #sendBtn:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.9);
+    }
+
+    .send-icon {
+      font-size: 14px;
+    }
+
+    /* Mobil uyum */
+    @media (max-width: 768px) {
+      .app-wrapper {
+        flex-direction: column;
+        max-width: 100%;
+        height: 100vh;
+      }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 0;
+      }
+      .chat-panel {
+        padding: 12px;
+      }
+      .sidebar {
+        padding: 16px 14px;
+      }
+      #messages {
+        padding: 8px 6px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="chat-container">
-    <h2>Kuray Tunc – HR Assistant</h2>
+<div class="app-wrapper">
+  <!-- SOL TARAF: Profil / Hızlı sorular -->
+  <aside class="sidebar">
+    <div style="display:flex; gap:12px; align-items:center;">
+      <div class="avatar">KT</div>
+      <div class="name-block">
+        <h1>Kuray Tunc</h1>
+        <p>Reporting / Data & Sustainability Analyst</p>
+        <div style="margin-top:6px;">
+          <span class="pill">
+            <span class="pill-dot"></span> Available for internships & junior roles
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title">Core focus</div>
+      <p style="margin:0; font-size:12px; color:var(--text-muted);">
+        I combine <strong>data analysis</strong>, <strong>IT support</strong> and
+        <strong>sustainability</strong> to support reporting, automation and digital transformation projects.
+      </p>
+    </div>
+
+    <div>
+      <div class="section-title">Key skills</div>
+      <div class="skills-list">
+        <span>Excel / Power BI</span>
+        <span>SQL &amp; Python</span>
+        <span>Reporting Automation</span>
+        <span>Process Optimisation</span>
+        <span>IT–Business Communication</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title">Quick HR questions</div>
+      <div class="quick-questions">
+        <button class="quick-btn" data-question="Can you briefly introduce yourself for this role?">
+          Introduce yourself
+          <span>classic opener</span>
+        </button>
+        <button class="quick-btn" data-question="What are your main strengths as a candidate?">
+          Main strengths
+          <span>skills-focused</span>
+        </button>
+        <button class="quick-btn" data-question="Why are you interested in data and reporting roles?">
+          Motivation for data roles
+          <span>motivation</span>
+        </button>
+        <button class="quick-btn" data-question="How does your sustainability background add value in a business environment?">
+          Sustainability angle
+          <span>value-add</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      This chatbot answers as <strong>Kuray Tunc</strong> based on a curated CV profile, so HR can quickly
+      understand my background, skills and fit.
+    </div>
+  </aside>
+
+  <!-- SAĞ TARAF: Chat -->
+  <section class="chat-panel">
+    <header class="chat-header">
+      <div class="chat-title">
+        <h2>Ask Kuray’s HR Assistant</h2>
+        <p>Type your own question or click a quick question on the left.</p>
+      </div>
+      <div class="badge">Answers in professional English</div>
+    </header>
 
     <div id="messages"></div>
 
     <div id="inputBox">
-        <input id="question" placeholder="Ask a recruiter question...">
-        <button id="sendBtn">Send</button>
+      <input id="question" placeholder="Ask a recruiter-style question, e.g. 'Tell me about your experience with reporting'">
+      <button id="sendBtn">
+        Send
+        <span class="send-icon">➤</span>
+      </button>
     </div>
+  </section>
 </div>
 
 <script>
-// BURASI ÖNEMLİ: Backend URL'ini buraya koyuyoruz
-const API_URL = "https://kuray-chatbot.onrender.com/chat";
+  const API_URL = "https://kuray-chatbot.onrender.com/chat";
 
-document.getElementById("sendBtn").onclick = sendMessage;
-document.getElementById("question").addEventListener("keydown", function (e) {
+  const sendBtn = document.getElementById("sendBtn");
+  const questionInput = document.getElementById("question");
+  const messagesBox = document.getElementById("messages");
+  const quickButtons = document.querySelectorAll(".quick-btn");
+
+  sendBtn.onclick = sendMessage;
+  questionInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") sendMessage();
-});
+  });
 
-async function sendMessage() {
-    const qInput = document.getElementById("question");
-    const text = qInput.value.trim();
+  quickButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const q = btn.getAttribute("data-question");
+      questionInput.value = q;
+      sendMessage();
+    });
+  });
+
+  async function sendMessage() {
+    const text = questionInput.value.trim();
     if (!text) return;
 
     addMessage(text, "user");
-    qInput.value = "";
+    questionInput.value = "";
 
     try {
-        const resp = await fetch(API_URL, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({question: text})
-        });
+      const resp = await fetch(API_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({question: text})
+      });
 
-        const data = await resp.json();
-        addMessage(data.answer || "No answer field in response.", "bot");
+      const data = await resp.json();
+      addMessage(data.answer || "No answer field in response.", "bot");
     } catch (err) {
-        addMessage("Error calling backend: " + err, "bot");
+      addMessage("Error calling backend: " + err, "bot");
     }
-}
+  }
 
-function addMessage(text, sender) {
-    const box = document.getElementById("messages");
+  function addMessage(text, sender) {
     const msg = document.createElement("div");
     msg.className = "msg " + sender;
-    msg.innerText = text;
-    box.appendChild(msg);
-    box.scrollTop = box.scrollHeight;
-}
+    msg.textContent = text;
+    messagesBox.appendChild(msg);
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+  }
 </script>
 
 </body>
