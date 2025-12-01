@@ -2,81 +2,140 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kuray Tunc – HR Chatbot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
+    :root {
+      --bg-main: #020617;
+      --panel-dark: #020617;
+      --panel-sidebar: #020617;
+      --border-subtle: rgba(148, 163, 184, 0.3);
+      --accent: #3b82f6;
+      --accent-soft: #1d4ed8;
+      --accent-green: #22c55e;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --orb-blue: rgba(59, 130, 246, 0.18);
+      --orb-cyan: rgba(56, 189, 248, 0.18);
+      --orb-violet: rgba(129, 140, 248, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: system-ui, sans-serif;
-      background: #020617;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text-main);
+      background: var(--bg-main);
       height: 100vh;
       overflow: hidden;
     }
 
-    /* --- BACKGROUND ANIMATION --- */
-    .floating {
+    /* ---- BACKGROUND ORBS ---- */
+
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .orb {
       position: absolute;
       border-radius: 50%;
-      background: rgba(59, 130, 246, 0.15);
-      pointer-events: none;
-      animation: float 12s infinite ease-in-out;
+      filter: blur(1px);
       mix-blend-mode: screen;
+      opacity: 0.9;
+      transform: translate3d(0, 0, 0);
     }
 
-    @keyframes float {
-      0% { transform: translateY(0px) }
-      50% { transform: translateY(-40px) }
-      100% { transform: translateY(0px) }
+    .orb.orb1 { width: 260px; height: 260px; background: var(--orb-blue);  left: -60px; top: 10%; }
+    .orb.orb2 { width: 220px; height: 220px; background: var(--orb-cyan);  right: -40px; top: 55%; }
+    .orb.orb3 { width: 280px; height: 280px; background: var(--orb-violet); left: 45%; top: -80px; }
+    .orb.orb4 { width: 190px; height: 190px; background: var(--orb-blue);  left: 30%; bottom: -70px; }
+    .orb.orb5 { width: 140px; height: 140px; background: var(--orb-cyan);  right: 20%; top: 18%; }
+    .orb.orb6 { width: 170px; height: 170px; background: var(--orb-violet); left: 8%; bottom: 18%; }
+
+    @keyframes float-slow {
+      0%   { transform: translateY(0);   }
+      50%  { transform: translateY(-24px);}
+      100% { transform: translateY(0);   }
     }
 
-    /* --- MAIN WRAPPER --- */
+    .orb {
+      animation: float-slow 16s ease-in-out infinite alternate;
+    }
+
+    /* ---- MAIN APP LAYOUT ---- */
+
     .app-wrapper {
-      display: flex;
-      height: 100vh;
-      width: 100%;
-      overflow: hidden;
       position: relative;
-      backdrop-filter: blur(6px);
+      z-index: 1;
+      height: 100vh;
+      display: flex;
+      max-width: 1200px;
+      margin: 0 auto;
+      background: radial-gradient(circle at top left, rgba(15,23,42,0.9), #020617);
+      border-radius: 20px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      box-shadow:
+        0 26px 50px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(15, 23, 42, 0.7);
+      overflow: hidden;
+      margin-top: 10px;
+      margin-bottom: 10px;
     }
 
-    /* --- SIDEBAR --- */
+    /* ---- SIDEBAR ---- */
+
     .sidebar {
-      width: 310px;
-      background: rgba(15, 23, 42, 0.55);
-      backdrop-filter: blur(20px);
-      padding: 26px;
-      border-right: 1px solid rgba(255, 255, 255, 0.06);
+      width: 320px;
+      padding: 26px 22px 24px;
+      background: linear-gradient(to bottom, rgba(15,23,42,0.96), rgba(15,23,42,0.98));
+      border-right: 1px solid rgba(148, 163, 184, 0.35);
       display: flex;
       flex-direction: column;
-      gap: 24px;
-      color: #e5e7eb;
+      gap: 22px;
+    }
+
+    .top-section {
+      display: flex;
+      gap: 14px;
+      align-items: center;
     }
 
     .avatar {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
+      width: 86px;
+      height: 86px;
+      border-radius: 999px;
       overflow: hidden;
-      border: 2px solid rgba(255,255,255,0.2);
+      border: 2px solid rgba(148, 163, 184, 0.55);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.7);
+      flex-shrink: 0;
     }
 
     .avatar img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: center 20%;
+      object-position: center 15%;
+      display: block;
     }
 
     .name-block h1 {
       margin: 0;
-      font-size: 20px;
+      font-size: 21px;
+      letter-spacing: 0.02em;
     }
 
     .name-block p {
       margin: 4px 0 0;
       font-size: 13px;
-      color: #9ca3af;
+      color: var(--text-muted);
     }
 
     .pill {
@@ -85,163 +144,360 @@
       gap: 6px;
       font-size: 11px;
       padding: 5px 9px;
-      border-radius: 9999px;
-      border: 1px solid rgba(255,255,255,0.25);
-      background: rgba(255,255,255,0.05);
-      margin-top: 4px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.88);
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
     }
 
     .section-title {
       font-size: 11px;
       text-transform: uppercase;
-      color: #94a3b8;
+      letter-spacing: 0.16em;
+      color: rgba(148, 163, 184, 0.9);
       margin-bottom: 6px;
-      letter-spacing: 1px;
+    }
+
+    .section-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
     .skills-list span {
       font-size: 11px;
-      padding: 4px 8px;
+      padding: 4px 9px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      margin-right: 6px;
-      margin-bottom: 6px;
-      display: inline-block;
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(55, 65, 81, 0.95);
+      color: var(--text-muted);
     }
 
-    /* --- CHAT PANEL --- */
+    .quick-questions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .quick-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.96);
+      color: var(--text-main);
+      font-size: 12px;
+      padding: 7px 11px;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.08s ease;
+    }
+
+    .quick-btn span {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .quick-btn:hover {
+      background: rgba(37, 99, 235, 0.26);
+      border-color: #3b82f6;
+      transform: translateY(-1px);
+    }
+
+    .footer-note {
+      margin-top: auto;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .footer-note strong {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    /* ---- CHAT PANEL ---- */
+
     .chat-panel {
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 20px;
-      color: white;
+      padding: 18px 18px 16px;
+      background: radial-gradient(circle at top right, rgba(56,189,248,0.25), transparent 50%),
+                  radial-gradient(circle at center, rgba(15,23,42,0.95), #020617);
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+    }
+
+    .chat-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .chat-title h2 {
+      margin: 0;
+      font-size: 19px;
+    }
+
+    .chat-title p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.92);
+      color: var(--text-muted);
+      max-width: 220px;
+      text-align: right;
     }
 
     #messages {
       flex: 1;
       overflow-y: auto;
-      padding-right: 10px;
-      margin-bottom: 14px;
+      padding: 10px 8px;
+      margin-bottom: 10px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.94);
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.65);
     }
 
     .msg {
       margin-bottom: 10px;
-      padding: 10px 14px;
-      border-radius: 10px;
-      max-width: 70%;
+      padding: 9px 11px;
+      border-radius: 12px;
+      line-height: 1.4;
+      font-size: 13px;
+      max-width: 90%;
       white-space: pre-wrap;
+      word-wrap: break-word;
     }
 
-    .user {
-      background: #22c55e;
-      color: #022c22;
+    .msg.user {
       margin-left: auto;
-      border-bottom-right-radius: 2px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #022c22;
+      border-bottom-right-radius: 4px;
     }
 
-    .bot {
-      background: #0f172a;
-      border: 1px solid #1e293b;
+    .msg.bot {
       margin-right: auto;
-      border-bottom-left-radius: 2px;
+      background: rgba(17, 24, 39, 0.98);
+      border-bottom-left-radius: 4px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
     }
 
-    #inputBar {
+    #inputBox {
       display: flex;
-      gap: 10px;
+      gap: 8px;
+      margin-top: 2px;
     }
 
     #question {
       flex: 1;
-      padding: 12px;
-      border-radius: 9999px;
-      background: #0f172a;
-      border: 1px solid #334155;
-      color: #e2e8f0;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      outline: none;
+      background: #020617;
+      color: var(--text-main);
+      font-size: 13px;
+    }
+
+    #question::placeholder {
+      color: var(--text-muted);
     }
 
     #sendBtn {
-      padding: 0 18px;
-      border-radius: 9999px;
+      border-radius: 999px;
       border: none;
-      background: #3b82f6;
-      color: white;
-      font-weight: 600;
+      padding: 0 18px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+      color: #f9fafb;
+      font-weight: 500;
+      font-size: 13px;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.45);
+      white-space: nowrap;
+    }
+
+    #sendBtn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(37, 99, 235, 0.60);
+    }
+
+    @media (max-width: 900px) {
+      .app-wrapper {
+        flex-direction: column;
+        height: auto;
+        margin: 0;
+        border-radius: 0;
+      }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(148,163,184,0.35);
+      }
+      .chat-panel {
+        min-height: calc(100vh - 260px);
+      }
     }
   </style>
 </head>
 
 <body>
 
-<!-- Background Animated Circles -->
-<div class="floating" style="width:140px; height:140px; left:10%; top:20%;"></div>
-<div class="floating" style="width:110px; height:110px; left:70%; top:80%; animation-duration: 15s;"></div>
-<div class="floating" style="width:160px; height:160px; left:40%; top:50%; animation-duration: 19s;"></div>
+<!-- Background Orbs -->
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div class="orb orb4"></div>
+  <div class="orb orb5"></div>
+  <div class="orb orb6"></div>
+</div>
 
 <div class="app-wrapper">
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="avatar">
-      <img src="https://raw.githubusercontent.com/kuraytunc/kuray-chatbot-frontend/main/avatar.jpg" />
-    </div>
+    <div class="top-section">
+      <div class="avatar">
+        <!-- avatar.jpg repo kökünde olduğu için direkt bu yolu kullanıyoruz -->
+        <img src="avatar.jpg" alt="Kuray Tunc" />
+      </div>
 
-    <div class="name-block">
-      <h1>Kuray Tunc</h1>
-      <p>Developer & Data Analyst</p>
-
-      <span class="pill">Available for internships & junior roles</span>
+      <div class="name-block">
+        <h1>Kuray Tunc</h1>
+        <p>Developer &amp; Data Analyst</p>
+        <span class="pill">
+          <span class="pill-dot"></span>
+          Available for internships &amp; junior roles
+        </span>
+      </div>
     </div>
 
     <div>
       <div class="section-title">Core Focus</div>
-      <p>I combine <strong>data analysis</strong>, <strong>business intelligence</strong>, and 
-      <strong>digital transformation</strong> projects.</p>
+      <p class="section-text">
+        I combine <strong>data analysis</strong>, <strong>business intelligence</strong> and
+        <strong>digital transformation</strong> projects.
+      </p>
     </div>
 
     <div>
       <div class="section-title">Key Skills</div>
       <div class="skills-list">
         <span>Excel / Power BI</span>
-        <span>SQL & Python</span>
+        <span>SQL &amp; Python</span>
         <span>Reporting Automation</span>
         <span>Process Optimisation</span>
         <span>IT–Business Communication</span>
       </div>
     </div>
 
+    <div>
+      <div class="section-title">Quick HR Questions</div>
+      <div class="quick-questions">
+        <button class="quick-btn" data-question="Can you briefly introduce yourself for this role?">
+          Introduce yourself
+          <span>classic opener</span>
+        </button>
+        <button class="quick-btn" data-question="What are your main strengths as a candidate?">
+          Main strengths
+          <span>skills-focused</span>
+        </button>
+        <button class="quick-btn" data-question="Why are you interested in data and reporting roles?">
+          Motivation for data roles
+          <span>motivation</span>
+        </button>
+        <button class="quick-btn" data-question="How does your sustainability background add value in a business environment?">
+          Sustainability angle
+          <span>value-add</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      This chatbot answers as <strong>Kuray Tunc</strong> based on a curated CV profile,
+      so HR can quickly understand my background, skills and fit.
+    </div>
   </aside>
 
   <!-- CHAT PANEL -->
   <section class="chat-panel">
-    <h2>Ask Kuray’s HR Assistant</h2>
+    <header class="chat-header">
+      <div class="chat-title">
+        <h2>Ask Kuray’s HR Assistant</h2>
+        <p>Type your own question or click a quick question on the left.</p>
+      </div>
+      <div class="badge">
+        After asking your question, please wait ~30 seconds for the reply.
+      </div>
+    </header>
 
     <div id="messages"></div>
 
-    <div id="inputBar">
-      <input id="question" placeholder="Ask a recruiter-style question..." />
-      <button id="sendBtn">Send</button>
+    <div id="inputBox">
+      <input id="question" placeholder="Ask a recruiter-style question, e.g. 'Tell me about your experience with reporting'" />
+      <button id="sendBtn">
+        Send
+      </button>
     </div>
   </section>
 </div>
 
 <script>
   const API_URL = "https://kuray-chatbot.onrender.com/chat";
-  const messagesBox = document.getElementById("messages");
+
+  const sendBtn = document.getElementById("sendBtn");
   const questionInput = document.getElementById("question");
+  const messagesBox = document.getElementById("messages");
+  const quickButtons = document.querySelectorAll(".quick-btn");
+  const orbs = document.querySelectorAll(".orb");
 
-  document.getElementById("sendBtn").onclick = sendMessage;
-  questionInput.addEventListener("keydown", e => { if (e.key === "Enter") sendMessage(); });
+  sendBtn.onclick = sendMessage;
+  questionInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") sendMessage();
+  });
 
-  function addMessage(text, sender) {
-    let div = document.createElement("div");
-    div.className = "msg " + sender;
-    div.textContent = text;
-    messagesBox.appendChild(div);
-    messagesBox.scrollTop = messagesBox.scrollHeight;
-  }
+  quickButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const q = btn.getAttribute("data-question");
+      questionInput.value = q;
+      sendMessage();
+    });
+  });
 
   async function sendMessage() {
     const text = questionInput.value.trim();
@@ -251,17 +507,39 @@
     questionInput.value = "";
 
     try {
-      const res = await fetch(API_URL, {
+      const resp = await fetch(API_URL, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({question: text})
       });
-      const data = await res.json();
-      addMessage(data.answer, "bot");
-    } catch {
-      addMessage("Backend error", "bot");
+
+      const data = await resp.json();
+      addMessage(data.answer || "No answer field in response.", "bot");
+    } catch (err) {
+      addMessage("Error calling backend: " + err, "bot");
     }
   }
+
+  function addMessage(text, sender) {
+    const msg = document.createElement("div");
+    msg.className = "msg " + sender;
+    msg.textContent = text;
+    messagesBox.appendChild(msg);
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+  }
+
+  // Mouse-based parallax for orbs
+  document.addEventListener("mousemove", (e) => {
+    const x = (e.clientX / window.innerWidth) - 0.5;
+    const y = (e.clientY / window.innerHeight) - 0.5;
+
+    orbs.forEach((orb, index) => {
+      const depth = (index + 1) * 6; // farklı hızlar
+      const translateX = -x * depth;
+      const translateY = -y * depth;
+      orb.style.transform = `translate(${translateX}px, ${translateY}px)`;
+    });
+  });
 </script>
 
 </body>
