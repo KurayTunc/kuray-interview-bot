@@ -34,11 +34,13 @@
       font-family: "Inter", sans-serif;
       background: #020617;
       color: var(--text-main);
-      overflow: hidden; /* Sayfanın kendisinde scroll olmasını engeller */
+      overflow: hidden;
+      
+      /* Sayfayı tam ortalamak için Flex yapısı */
       height: 100vh;
       display: flex;
-      align-items: center; /* Dikey ortalama */
-      justify-content: center; /* Yatay ortalama */
+      align-items: center;
+      justify-content: center;
     }
 
 
@@ -69,16 +71,17 @@
     .orb6 { width: 480px; height: 480px; background: var(--orb-violet); left: -120px; bottom: 5%; }
 
 
-    /* ---------------- MAIN WRAPPER ---------------- */
+    /* ---------------- MAIN WRAPPER (KOMPAKT) ---------------- */
 
     .app-wrapper {
       position: relative;
       z-index: 2;
       
-      /* --- DEĞİŞİKLİK BURADA: Yükseklik %85'e düşürüldü --- */
-      height: 85vh; 
+      /* %75 görünümü için boyutlar küçültüldü */
       width: 90%;
-      max-width: 1500px;
+      max-width: 1250px; /* Önceden 1600px idi */
+      height: 80vh;      /* Önceden 95vh idi */
+      max-height: 800px; 
 
       display: flex;
 
@@ -88,28 +91,27 @@
 
       border: 1px solid rgba(148, 163, 184, 0.25);
       box-shadow:
-        0 50px 80px rgba(0, 0, 0, 0.55),
+        0 40px 70px rgba(0, 0, 0, 0.55),
         0 0 0 1px rgba(255, 255, 255, 0.05);
 
       overflow: hidden;
     }
 
 
-    /* ---------------- SIDEBAR ---------------- */
+    /* ---------------- SIDEBAR (KOMPAKT) ---------------- */
 
     .sidebar {
-      width: 400px; /* Genişlik biraz azaltıldı */
-      padding: 25px; /* Padding biraz sıkılaştırıldı */
+      width: 340px; /* Önceden 440px idi */
+      padding: 25px; /* Önceden 35px idi */
       background: rgba(2,6,23,0.85);
       border-right: 1px solid rgba(148,163,184,0.25);
       display: flex;
       flex-direction: column;
-      gap: 20px; /* Elemanlar arası boşluk biraz azaltıldı */
-      overflow-y: auto; /* Ekran çok küçükse sidebar içinde scroll açılır */
+      gap: 18px; /* Boşluklar azaltıldı */
+      overflow-y: auto;
     }
-
-    /* Scrollbar stilini gizle/güzelleştir (Sidebar için) */
-    .sidebar::-webkit-scrollbar { width: 5px; }
+    
+    .sidebar::-webkit-scrollbar { width: 4px; }
     .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
 
     .top-section {
@@ -119,15 +121,15 @@
     }
 
     .avatar {
-      width: 130px; /* Avatar biraz küçültüldü */
-      height: 130px;
+      width: 110px; /* Önceden 160px idi */
+      height: 110px;
       border-radius: 50%;
       overflow: hidden;
 
       border: 3px solid rgba(148,163,184,0.6);
       box-shadow:
-        0 0 25px rgba(59,130,246,0.50),
-        0 15px 35px rgba(0,0,0,0.7);
+        0 0 20px rgba(59,130,246,0.50),
+        0 10px 25px rgba(0,0,0,0.7);
 
       flex-shrink: 0;
     }
@@ -140,12 +142,12 @@
     }
 
     .name-block h1 {
-      font-size: 24px; /* Font boyutu ayarlandı */
+      font-size: 22px; /* Font küçültüldü */
       margin: 0;
     }
 
     .name-block p {
-      font-size: 15px;
+      font-size: 14px;
       margin: 2px 0 0;
       color: var(--text-muted);
     }
@@ -157,7 +159,7 @@
       padding: 5px 10px;
       margin-top: 8px;
 
-      font-size: 12px;
+      font-size: 11px; /* Font küçültüldü */
       border-radius: 999px;
       border: 1px solid rgba(148,163,184,0.5);
       background: rgba(15,23,42,0.85);
@@ -172,7 +174,7 @@
     }
 
     .section-title {
-      font-size: 13px;
+      font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.15em;
       color: rgba(148,163,184,0.9);
@@ -181,7 +183,7 @@
     }
 
     .section-text {
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.5;
       color: var(--text-muted);
       margin: 0;
@@ -194,8 +196,8 @@
     }
 
     .skills-list span {
-      font-size: 13px;
-      padding: 5px 10px;
+      font-size: 12px;
+      padding: 4px 10px;
       background: rgba(15,23,42,0.95);
       border: 1px solid rgba(55,65,81,0.9);
       border-radius: 999px;
@@ -215,7 +217,7 @@
 
       background: rgba(15,23,42,0.95);
       color: var(--text-main);
-      font-size: 14px;
+      font-size: 13px;
       text-align: left;
       cursor: pointer;
 
@@ -227,7 +229,7 @@
     }
 
     .quick-btn span {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-muted);
     }
 
@@ -239,14 +241,14 @@
 
     .footer-note {
       margin-top: auto;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-muted);
       line-height: 1.4;
-      padding-top: 10px;
+      padding-top: 5px;
     }
 
 
-    /* ---------------- CHAT PANEL ---------------- */
+    /* ---------------- CHAT PANEL (KOMPAKT) ---------------- */
 
     .chat-panel {
       flex: 1;
@@ -263,28 +265,28 @@
       align-items: flex-start;
       padding-bottom: 12px;
       border-bottom: 1px solid rgba(148,163,184,0.25);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .chat-title h2 {
       margin: 0;
-      font-size: 22px;
+      font-size: 20px; /* Başlık küçültüldü */
     }
 
     .chat-title p {
       margin: 4px 0 0;
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-muted);
     }
 
     .badge {
-      font-size: 12px;
+      font-size: 11px;
       padding: 6px 12px;
       border-radius: 999px;
       border: 1px solid rgba(148,163,184,0.6);
       background: rgba(15,23,42,0.85);
       color: var(--text-muted);
-      max-width: 260px;
+      max-width: 200px;
       text-align: right;
     }
 
@@ -296,18 +298,17 @@
       background: rgba(15,23,42,0.85);
       box-shadow: inset 0 0 0 1px rgba(0,0,0,0.4);
     }
-
-    /* Mesaj alanı scrollbar */
-    #messages::-webkit-scrollbar { width: 6px; }
-    #messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+    
+    #messages::-webkit-scrollbar { width: 5px; }
+    #messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
 
 
     .msg {
       padding: 10px 14px;
-      border-radius: 12px;
+      border-radius: 10px;
       max-width: 85%;
       margin-bottom: 10px;
-      font-size: 14px;
+      font-size: 14px; /* Mesaj fontu okunabilirlik için çok küçültülmedi */
       line-height: 1.5;
     }
 
@@ -331,22 +332,22 @@
 
     #question {
       flex: 1;
-      padding: 12px 16px;
+      padding: 12px 18px;
       border-radius: 999px;
       border: 1px solid rgba(55,65,81,0.85);
       background: #020617;
       color: var(--text-main);
-      font-size: 15px;
+      font-size: 14px;
       outline: none;
     }
 
     #sendBtn {
-      padding: 0 20px;
+      padding: 0 24px;
       border-radius: 999px;
       background: linear-gradient(135deg, var(--accent), var(--accent-soft));
       border: none;
       color: #fff;
-      font-size: 15px;
+      font-size: 14px;
       cursor: pointer;
       font-weight: 600;
       box-shadow: 0 10px 25px rgba(37,99,235,0.4);
