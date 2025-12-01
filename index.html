@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Kuray Tunc – HR Chatbot</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,6 +38,8 @@
       
       /* Sayfayı tam ortalamak için Flex yapısı */
       height: 100vh;
+      /* Mobil tarayıcılar için dinamik yükseklik */
+      height: 100dvh; 
       display: flex;
       align-items: center;
       justify-content: center;
@@ -71,19 +73,19 @@
     .orb6 { width: 480px; height: 480px; background: var(--orb-violet); left: -120px; bottom: 5%; }
 
 
-    /* ---------------- MAIN WRAPPER (KOMPAKT) ---------------- */
+    /* ---------------- MAIN WRAPPER ---------------- */
 
     .app-wrapper {
       position: relative;
       z-index: 2;
       
-      /* %75 görünümü için boyutlar küçültüldü */
       width: 90%;
-      max-width: 1250px; /* Önceden 1600px idi */
-      height: 80vh;      /* Önceden 95vh idi */
+      max-width: 1250px;
+      height: 80vh;      
       max-height: 800px; 
 
       display: flex;
+      flex-direction: row; /* Varsayılan yan yana */
 
       background: rgba(15, 23, 42, 0.75);
       backdrop-filter: blur(25px);
@@ -95,20 +97,22 @@
         0 0 0 1px rgba(255, 255, 255, 0.05);
 
       overflow: hidden;
+      transition: all 0.3s ease;
     }
 
 
-    /* ---------------- SIDEBAR (KOMPAKT) ---------------- */
+    /* ---------------- SIDEBAR ---------------- */
 
     .sidebar {
-      width: 340px; /* Önceden 440px idi */
-      padding: 25px; /* Önceden 35px idi */
+      width: 340px; 
+      padding: 25px;
       background: rgba(2,6,23,0.85);
       border-right: 1px solid rgba(148,163,184,0.25);
       display: flex;
       flex-direction: column;
-      gap: 18px; /* Boşluklar azaltıldı */
+      gap: 18px;
       overflow-y: auto;
+      flex-shrink: 0; /* Sidebar küçülmesin */
     }
     
     .sidebar::-webkit-scrollbar { width: 4px; }
@@ -121,7 +125,7 @@
     }
 
     .avatar {
-      width: 110px; /* Önceden 160px idi */
+      width: 110px;
       height: 110px;
       border-radius: 50%;
       overflow: hidden;
@@ -142,7 +146,7 @@
     }
 
     .name-block h1 {
-      font-size: 22px; /* Font küçültüldü */
+      font-size: 22px;
       margin: 0;
     }
 
@@ -159,7 +163,7 @@
       padding: 5px 10px;
       margin-top: 8px;
 
-      font-size: 11px; /* Font küçültüldü */
+      font-size: 11px;
       border-radius: 999px;
       border: 1px solid rgba(148,163,184,0.5);
       background: rgba(15,23,42,0.85);
@@ -248,15 +252,16 @@
     }
 
 
-    /* ---------------- CHAT PANEL (KOMPAKT) ---------------- */
+    /* ---------------- CHAT PANEL ---------------- */
 
     .chat-panel {
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 30px; /* Padding azaltıldı */
+      padding: 30px;
       background: rgba(2,6,23,0.6);
       backdrop-filter: blur(20px);
+      min-width: 0; /* Flexbox taşma sorunu için kritik */
     }
 
     .chat-header {
@@ -270,7 +275,7 @@
 
     .chat-title h2 {
       margin: 0;
-      font-size: 20px; /* Başlık küçültüldü */
+      font-size: 20px;
     }
 
     .chat-title p {
@@ -288,6 +293,7 @@
       color: var(--text-muted);
       max-width: 200px;
       text-align: right;
+      white-space: nowrap;
     }
 
     #messages {
@@ -308,8 +314,9 @@
       border-radius: 10px;
       max-width: 85%;
       margin-bottom: 10px;
-      font-size: 14px; /* Mesaj fontu okunabilirlik için çok küçültülmedi */
+      font-size: 14px;
       line-height: 1.5;
+      word-wrap: break-word; /* Uzun kelimeleri kırar */
     }
 
     .msg.user {
@@ -339,6 +346,7 @@
       color: var(--text-main);
       font-size: 14px;
       outline: none;
+      min-width: 0;
     }
 
     #sendBtn {
@@ -351,11 +359,77 @@
       cursor: pointer;
       font-weight: 600;
       box-shadow: 0 10px 25px rgba(37,99,235,0.4);
+      flex-shrink: 0;
     }
 
     #sendBtn:hover {
       transform: translateY(-2px);
       box-shadow: 0 15px 30px rgba(37,99,235,0.55);
+    }
+
+    /* ------------------------------------------------ */
+    /* ------------- MOBILE RESPONSIVE (YENİ) --------- */
+    /* ------------------------------------------------ */
+
+    @media (max-width: 900px) {
+      body {
+        /* Mobilde kaydırmayı kapatıp uygulama hissi veriyoruz */
+        position: fixed;
+        width: 100%;
+      }
+
+      .app-wrapper {
+        /* Ekranın tamamını kapla */
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        max-height: none;
+        border-radius: 0;
+        border: none;
+        
+        /* Dikey yerleşim */
+        flex-direction: column;
+      }
+
+      .sidebar {
+        /* Sidebar üstte ve %100 genişlikte */
+        width: 100%;
+        height: 35%; /* Ekranın %35'i sidebar (bilgi) olsun */
+        min-height: 200px;
+        border-right: none;
+        border-bottom: 1px solid rgba(148,163,184,0.25);
+        padding: 15px;
+        gap: 12px;
+      }
+
+      /* Sidebar içindeki gereksiz boşlukları azalt */
+      .avatar {
+        width: 70px;
+        height: 70px;
+        border-width: 2px;
+      }
+      .name-block h1 { font-size: 18px; }
+      .name-block p { font-size: 12px; }
+      .pill { font-size: 10px; padding: 3px 8px; margin-top: 4px; }
+      
+      .quick-btn {
+        padding: 6px 10px; /* Butonları küçült */
+      }
+
+      .chat-panel {
+        /* Kalan alanı chat kaplasın */
+        height: 65%;
+        width: 100%;
+        padding: 15px;
+      }
+
+      .chat-header {
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+      }
+      
+      .chat-title h2 { font-size: 16px; }
+      .badge { font-size: 10px; padding: 4px 8px; }
     }
 
   </style>
@@ -377,7 +451,7 @@
 
     <div class="top-section">
       <div class="avatar">
-        <img src="avatar.jpg" alt="Kuray Tunc">
+        <img src="avatar.jpg" onerror="this.src='https://placehold.co/200x200/1e293b/ffffff?text=KT'" alt="Kuray Tunc">
       </div>
 
       <div class="name-block">
@@ -395,7 +469,7 @@
       <div class="section-title">Core Focus</div>
       <p class="section-text">
         I combine <strong>data analysis</strong>, <strong>business intelligence</strong>, and
-        <strong>digital transformation</strong> projects.
+        <strong>digital transformation</strong>.
       </p>
     </div>
 
@@ -405,8 +479,7 @@
         <span>Excel / Power BI</span>
         <span>SQL & Python</span>
         <span>Reporting Automation</span>
-        <span>Process Optimisation</span>
-        <span>IT–Business Communication</span>
+        <span>IT–Business Comm.</span>
       </div>
     </div>
 
@@ -418,22 +491,17 @@
         </button>
 
         <button class="quick-btn" data-question="What are your main strengths as a candidate?">
-          Main strengths <span>skills-focused</span>
+          Main strengths <span>skills</span>
         </button>
 
         <button class="quick-btn" data-question="Why are you interested in data and reporting roles?">
-          Motivation for data roles <span>motivation</span>
-        </button>
-
-        <button class="quick-btn" data-question="How does your sustainability background add value in a business environment?">
-          Sustainability angle <span>value-add</span>
+          Motivation <span>why data?</span>
         </button>
       </div>
     </div>
 
     <div class="footer-note">
-      This chatbot answers as <strong>Kuray Tunc</strong> based on a curated CV profile,
-      helping HR quickly understand my background.
+      This chatbot answers as <strong>Kuray Tunc</strong>.
     </div>
 
   </aside>
@@ -442,19 +510,19 @@
 
     <header class="chat-header">
       <div class="chat-title">
-        <h2>Ask Kuray’s HR Assistant</h2>
-        <p>Type your own question or click a quick question on the left.</p>
+        <h2>Ask HR Assistant</h2>
+        <p>Type below or click a topic.</p>
       </div>
 
       <div class="badge">
-        Wait ~30s for the reply.
+        Wait ~30s for reply
       </div>
     </header>
 
     <div id="messages"></div>
 
     <div id="inputBox">
-      <input id="question" placeholder="Ask a recruiter-style question...">
+      <input id="question" placeholder="Ask a question..." autocomplete="off">
       <button id="sendBtn">Send</button>
     </div>
 
@@ -492,15 +560,23 @@
     questionInput.value = "";
 
     try {
+      addMessage("Typing...", "bot temp-msg"); // Geçici mesaj
+      
       const resp = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: text }),
       });
 
+      // Loading mesajını kaldır
+      const temp = document.querySelector(".temp-msg");
+      if(temp) temp.remove();
+
       const data = await resp.json();
-      addMessage(data.answer || "No answer field.", "bot");
+      addMessage(data.answer || "No answer received.", "bot");
     } catch (err) {
+      const temp = document.querySelector(".temp-msg");
+      if(temp) temp.remove();
       addMessage("Error connecting to backend.", "bot");
     }
   }
@@ -513,16 +589,18 @@
     messagesBox.scrollTop = messagesBox.scrollHeight;
   }
 
-  // Parallax effect for background orbs
-  document.addEventListener("mousemove", (e) => {
-    const x = (e.clientX / window.innerWidth - 0.5);
-    const y = (e.clientY / window.innerHeight - 0.5);
+  // Parallax effect (Sadece masaüstünde çalışması daha performanslı olur, mobilde kapattım)
+  if (window.innerWidth > 900) {
+    document.addEventListener("mousemove", (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5);
+      const y = (e.clientY / window.innerHeight - 0.5);
 
-    orbs.forEach((orb, i) => {
-      const depth = (i + 1) * 25;
-      orb.style.transform = `translate(${x * -depth}px, ${y * -depth}px)`;
+      orbs.forEach((orb, i) => {
+        const depth = (i + 1) * 25;
+        orb.style.transform = `translate(${x * -depth}px, ${y * -depth}px)`;
+      });
     });
-  });
+  }
 </script>
 
 </body>
