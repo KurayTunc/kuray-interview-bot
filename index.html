@@ -36,9 +36,9 @@
       color: var(--text-main);
       overflow: hidden;
       
-      /* Sayfayı tam ortalamak için Flex yapısı */
+      //*Flex Strucute */
       height: 100vh;
-      /* Mobil tarayıcılar için dinamik yükseklik */
+      /* For mobile dynamic height */
       height: 100dvh; 
       display: flex;
       align-items: center;
@@ -46,7 +46,7 @@
     }
 
 
-    /* ---------------- BACKGROUND ORBS ---------------- */
+   
 
     .bg-orbs {
       position: fixed;
@@ -73,7 +73,7 @@
     .orb6 { width: 480px; height: 480px; background: var(--orb-violet); left: -120px; bottom: 5%; }
 
 
-    /* ---------------- MAIN WRAPPER ---------------- */
+   
 
     .app-wrapper {
       position: relative;
@@ -85,7 +85,7 @@
       max-height: 800px; 
 
       display: flex;
-      flex-direction: row; /* Varsayılan yan yana */
+      flex-direction: row; 
 
       background: rgba(15, 23, 42, 0.75);
       backdrop-filter: blur(25px);
@@ -101,7 +101,7 @@
     }
 
 
-    /* ---------------- SIDEBAR ---------------- */
+    
 
     .sidebar {
       width: 340px; 
@@ -112,7 +112,7 @@
       flex-direction: column;
       gap: 18px;
       overflow-y: auto;
-      flex-shrink: 0; /* Sidebar küçülmesin */
+      flex-shrink: 0; 
     }
     
     .sidebar::-webkit-scrollbar { width: 4px; }
@@ -252,7 +252,7 @@
     }
 
 
-    /* ---------------- CHAT PANEL ---------------- */
+  
 
     .chat-panel {
       flex: 1;
@@ -261,7 +261,7 @@
       padding: 30px;
       background: rgba(2,6,23,0.6);
       backdrop-filter: blur(20px);
-      min-width: 0; /* Flexbox taşma sorunu için kritik */
+      min-width: 0; 
     }
 
     .chat-header {
@@ -316,7 +316,7 @@
       margin-bottom: 10px;
       font-size: 14px;
       line-height: 1.5;
-      word-wrap: break-word; /* Uzun kelimeleri kırar */
+      word-wrap: break-word; 
     }
 
     .msg.user {
@@ -367,19 +367,17 @@
       box-shadow: 0 15px 30px rgba(37,99,235,0.55);
     }
 
-    /* ------------------------------------------------ */
-    /* ------------- MOBILE RESPONSIVE (YENİ) --------- */
-    /* ------------------------------------------------ */
+    
 
     @media (max-width: 900px) {
       body {
-        /* Mobilde kaydırmayı kapatıp uygulama hissi veriyoruz */
+        
         position: fixed;
         width: 100%;
       }
 
       .app-wrapper {
-        /* Ekranın tamamını kapla */
+        
         width: 100%;
         height: 100%;
         max-width: none;
@@ -387,14 +385,14 @@
         border-radius: 0;
         border: none;
         
-        /* Dikey yerleşim */
+        
         flex-direction: column;
       }
 
       .sidebar {
-        /* Sidebar üstte ve %100 genişlikte */
+        
         width: 100%;
-        height: 35%; /* Ekranın %35'i sidebar (bilgi) olsun */
+        height: 35%; 
         min-height: 200px;
         border-right: none;
         border-bottom: 1px solid rgba(148,163,184,0.25);
@@ -402,7 +400,7 @@
         gap: 12px;
       }
 
-      /* Sidebar içindeki gereksiz boşlukları azalt */
+      
       .avatar {
         width: 70px;
         height: 70px;
@@ -413,11 +411,11 @@
       .pill { font-size: 10px; padding: 3px 8px; margin-top: 4px; }
       
       .quick-btn {
-        padding: 6px 10px; /* Butonları küçült */
+        padding: 6px 10px; 
       }
 
       .chat-panel {
-        /* Kalan alanı chat kaplasın */
+        
         height: 65%;
         width: 100%;
         padding: 15px;
@@ -560,7 +558,7 @@
     questionInput.value = "";
 
     try {
-      addMessage("Typing...", "bot temp-msg"); // Geçici mesaj
+      addMessage("Typing...", "bot temp-msg"); 
       
       const resp = await fetch(API_URL, {
         method: "POST",
@@ -568,7 +566,7 @@
         body: JSON.stringify({ question: text }),
       });
 
-      // Loading mesajını kaldır
+      
       const temp = document.querySelector(".temp-msg");
       if(temp) temp.remove();
 
@@ -589,7 +587,7 @@
     messagesBox.scrollTop = messagesBox.scrollHeight;
   }
 
-  // Parallax effect (Sadece masaüstünde çalışması daha performanslı olur, mobilde kapattım)
+  
   if (window.innerWidth > 900) {
     document.addEventListener("mousemove", (e) => {
       const x = (e.clientX / window.innerWidth - 0.5);
