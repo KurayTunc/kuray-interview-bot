@@ -328,6 +328,39 @@
       border: 1px solid rgba(55, 65, 81, 0.8);
     }
 
+    .reply-quote {
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--text-muted);
+      border-left: 3px solid var(--accent-green);
+      background: rgba(34, 197, 94, 0.08);
+      border-radius: 6px;
+      padding: 5px 8px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .reply-quote:hover {
+      background: rgba(34, 197, 94, 0.16);
+    }
+
+    .msg.typing {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    @keyframes flash {
+      0%, 100% { box-shadow: none; }
+      30% { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.8); }
+    }
+
+    .msg.flash {
+      animation: flash 1.2s ease;
+    }
+
     #inputBox {
       display: flex;
       gap: 10px;
@@ -568,6 +601,17 @@
   const quickButtons = document.querySelectorAll(".quick-btn");
   const orbs = document.querySelectorAll(".orb");
 
+  // Conversation memory: sent with every question so follow-ups make sense
+  let history = [];
+
+  // Questions wait here and are answered one at a time, in order
+  const queue = [];
+  let processing = false;
+  let typingEl = null;
+
+  // Wake the Render server as soon as the page opens
+  fetch(API_URL.replace(/\/chat$/, "/"), { cache: "no-store" }).catch(() => {});
+
   sendBtn.onclick = sendMessage;
 
   questionInput.addEventListener("keydown", (e) => {
@@ -581,39 +625,103 @@
     });
   });
 
-  async function sendMessage() {
+  function sendMessage() {
     const text = questionInput.value.trim();
     if (!text) return;
 
-    addMessage(text, "user");
+    const el = addMessage(text, "user");
     questionInput.value = "";
+    questionInput.focus();
 
-    try {
-      addMessage("Typing...", "bot temp-msg");
+    queue.push({ text, el });
+    if (processing) showTyping();   // keep "Typing..." below the newest question
+    processQueue();
+  }
 
-      const resp = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: text }),
-      });
+  async function processQueue() {
+    if (processing) return;
+    processing = true;
 
-      const temp = document.querySelector(".temp-msg");
-      if (temp) temp.remove();
+    while (queue.length) {
+      const item = queue.shift();
+      showTyping();
 
-      const data = await resp.json();
-      addMessage(data.answer || "No answer received.", "bot");
-    } catch (err) {
-      const temp = document.querySelector(".temp-msg");
-      if (temp) temp.remove();
+      let answer;
+      let ok = false;
+      try {
+        const resp = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question: item.text, history: history.slice(-10) }),
+        });
+        const data = await resp.json();
+        answer = data.answer || "No answer received.";
+        ok = Boolean(data.answer);
+      } catch (err) {
+        answer = "Sorry, I couldn't connect just now. Please try again in a moment.";
+      }
 
-      addMessage("Error connecting to backend.", "bot");
+      hideTyping();
+
+      // Quote the question only if something else came after it
+      const needsQuote = messagesBox.lastElementChild !== item.el;
+      addBotMessage(answer, needsQuote ? item : null);
+
+      if (ok) {
+        history.push({ role: "user", content: item.text });
+        history.push({ role: "assistant", content: answer });
+      }
     }
+
+    processing = false;
+  }
+
+  function showTyping() {
+    if (!typingEl) {
+      typingEl = document.createElement("div");
+      typingEl.className = "msg bot typing";
+      typingEl.textContent = "Typing...";
+    }
+    messagesBox.appendChild(typingEl);   // (re)moves it to the bottom
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+  }
+
+  function hideTyping() {
+    if (typingEl) typingEl.remove();
   }
 
   function addMessage(text, sender) {
     const msg = document.createElement("div");
     msg.className = "msg " + sender;
     msg.textContent = text;
+    messagesBox.appendChild(msg);
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+    return msg;
+  }
+
+  function addBotMessage(text, repliedTo) {
+    const msg = document.createElement("div");
+    msg.className = "msg bot";
+
+    if (repliedTo) {
+      const quote = document.createElement("div");
+      quote.className = "reply-quote";
+      const short = repliedTo.text.length > 90 ? repliedTo.text.slice(0, 90) + "…" : repliedTo.text;
+      quote.textContent = short;
+      quote.title = "Show question";
+      quote.onclick = () => {
+        repliedTo.el.scrollIntoView({ behavior: "smooth", block: "center" });
+        repliedTo.el.classList.remove("flash");
+        void repliedTo.el.offsetWidth;          // restart the animation
+        repliedTo.el.classList.add("flash");
+      };
+      msg.appendChild(quote);
+    }
+
+    const body = document.createElement("div");
+    body.textContent = text;
+    msg.appendChild(body);
+
     messagesBox.appendChild(msg);
     messagesBox.scrollTop = messagesBox.scrollHeight;
   }
